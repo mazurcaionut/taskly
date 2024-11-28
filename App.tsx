@@ -1,14 +1,42 @@
-import { StatusBar } from "expo-status-bar";
-import { PixelRatio, StyleSheet, Text, View } from "react-native";
+import {
+    StyleSheet,
+    Text,
+    View,
+    Button,
+    TouchableOpacity,
+    Pressable,
+    Alert,
+} from "react-native";
 import { theme } from "./theme";
 
 export default function App() {
+    const handleDelete = () => {
+        Alert.alert(
+            "Are you sure you want to delete this?",
+            "It will be gone for good",
+            [
+                {
+                    text: "Yes",
+                    style: "destructive",
+                    onPress: () => console.log("Deleting"),
+                },
+                { text: "Cancel", style: "cancel" },
+            ]
+        );
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.itemContainer}>
                 <Text style={styles.itemText}>Coffee</Text>
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={handleDelete}
+                    activeOpacity={0.8}
+                >
+                    <Text style={styles.buttonText}>Delete</Text>
+                </TouchableOpacity>
             </View>
-            <StatusBar style="auto" />
         </View>
     );
 }
@@ -24,6 +52,20 @@ const styles = StyleSheet.create({
         borderBottomColor: theme.colorCerulean,
         paddingHorizontal: 8,
         paddingVertical: 16,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
     },
     itemText: { fontSize: 18, fontWeight: "200" },
+    button: {
+        backgroundColor: theme.colorBlack,
+        padding: 8,
+        borderRadius: 6,
+    },
+    buttonText: {
+        color: theme.colorWhite,
+        fontWeight: "bold",
+        textTransform: "uppercase",
+        letterSpacing: 1,
+    },
 });
