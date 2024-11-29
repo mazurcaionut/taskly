@@ -19,6 +19,7 @@ export default function Layout() {
             <Tabs.Screen
                 name="counter"
                 options={{
+                    headerShown: false,
                     title: "Counter",
                     tabBarIcon: ({ color, size }) => (
                         <AntDesign name="clockcircleo" size={size} color={color} />
