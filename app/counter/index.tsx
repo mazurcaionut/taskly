@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, TouchableOpacity, Alert } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
 import { theme } from "../../theme";
 import { registerForPushNotificationsAsync } from "../../utils/registerForPushNotificationsAsync";
 import * as Device from "expo-device";
@@ -23,6 +23,7 @@ type CountdownStatus = {
 };
 
 export default function CounterScreen() {
+    const [isLoading, setIsLoading] = useState(true);
     const [countdownState, setCountdownState] = useState<PersistedCountdownState>();
     const [status, setStatus] = useState<CountdownStatus>({
         isOverdue: false,
@@ -34,8 +35,21 @@ export default function CounterScreen() {
     useEffect(() => {
         const init = async () => {
             const value = await getFromStorage(countdownStorageKey);
-
             setCountdownState(value);
+
+            // Initialize status right after getting the stored value
+            if (value?.completedAtTimestamps[0]) {
+                const timestamp = value.completedAtTimestamps[0] + frequency;
+                const isOverdue = isBefore(timestamp, Date.now());
+                const distance = intervalToDuration(
+                    isOverdue
+                        ? { start: timestamp, end: Date.now() }
+                        : { start: Date.now(), end: timestamp }
+                );
+                setStatus({ isOverdue, distance });
+            }
+
+            setIsLoading(false);
         };
         init();
     }, []);
@@ -99,6 +113,14 @@ export default function CounterScreen() {
         setCountdownState(newCountdownState);
         await saveToStorage(countdownStorageKey, newCountdownState);
     };
+
+    if (isLoading) {
+        return (
+            <View style={styles.activityIndicatorContainer}>
+                <ActivityIndicator />
+            </View>
+        );
+    }
 
     return (
         <View style={[styles.container, status.isOverdue ? styles.containerLate : undefined]}>
@@ -172,5 +194,11 @@ const styles = StyleSheet.create({
     },
     whiteText: {
         color: theme.colorWhite,
+    },
+    activityIndicatorContainer: {
+        backgroundColor: theme.colorWhite,
+        justifyContent: "center",
+        alignItems: "center",
+        flex: 1,
     },
 });
