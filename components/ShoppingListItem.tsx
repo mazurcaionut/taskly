@@ -3,19 +3,14 @@ import { theme } from "../theme";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Entypo from "@expo/vector-icons/Entypo";
 
-interface ShoppingListItemProps {
+type Props = {
     name?: string;
     isCompleted?: boolean;
     onDelete: () => void;
     onToggleComplete: () => void;
-}
+};
 
-export function ShoppingListItem({
-    name,
-    isCompleted,
-    onDelete,
-    onToggleComplete,
-}: ShoppingListItemProps) {
+export function ShoppingListItem({ name, isCompleted, onDelete, onToggleComplete }: Props) {
     const handleDelete = () => {
         Alert.alert(`Are you sure you want to delete ${name}?`, "It will be gone for good", [
             {
